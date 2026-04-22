@@ -1,0 +1,10 @@
+.git
+.gitignore
+__pycache__/
+*.pyc
+ecommerce.db
+venv/
+env/
+.env
+Dockerfile
+k8s/
