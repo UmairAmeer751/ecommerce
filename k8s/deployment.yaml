@@ -17,7 +17,7 @@ spec:
       containers:
       - name: ecommerce-app
         # Replace 'umairdevops' with your actual Docker Hub username before pushing
-        image: umairameerhussain004/ecommerce:fa23-bcs-209
+        image: ghcr.io/umairameer751/ecommerce:latest
         ports:
         - containerPort: 5000
         env:
