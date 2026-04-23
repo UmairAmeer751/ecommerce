@@ -15,11 +15,11 @@
             <ul>
                 <li><a href="#">Home</a></li>
                 <li><a href="#products">Shop</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
-        <div class="cart-icon">
+        <div class="cart-icon" id="cart-btn">
             🛒 <span id="cart-count" class="badge">0</span>
         </div>
     </header>
@@ -39,6 +39,39 @@
             <div class="loader">Loading products...</div>
         </div>
     </main>
+
+    <section id="about" class="container about-section">
+        <h2 class="section-title">About NexShop</h2>
+        <div class="about-content">
+            <p>Welcome to NexShop, your ultimate destination for premium tech and modern gadgets. We believe that technology should not only be functional but also beautiful. Our curated selection brings you the best of innovation, ensuring you stay ahead in the digital era. Crafted with passion, this platform serves as a modern e-commerce solution built with scalability and user experience in mind.</p>
+        </div>
+    </section>
+
+    <section id="contact" class="container contact-section">
+        <h2 class="section-title">Contact Us</h2>
+        <div class="contact-content">
+            <div class="contact-card">
+                <h3>Get in Touch</h3>
+                <p><strong>Phone:</strong> +92 300 1234567</p>
+                <p><strong>Email:</strong> support@nexshop.pk</p>
+                <p><strong>Address:</strong> 123 Tech Avenue, Lahore, Pakistan</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-cart">&times;</span>
+            <h2>Your Cart</h2>
+            <div id="cart-items" class="cart-items">
+                <p class="empty-cart">Your cart is currently empty.</p>
+            </div>
+            <div class="cart-total">
+                <h3>Total: $<span id="cart-total-price">0.00</span></h3>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <p>&copy; 2026 NexShop. Designed for DevOps Lab Exam. All rights reserved.</p>

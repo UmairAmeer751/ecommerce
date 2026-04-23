@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
       - name: ecommerce-app
-        # Make sure to replace <YOUR_DOCKERHUB_USERNAME> with the actual username and REG_NO with actual Registration Number
-        image: <YOUR_DOCKERHUB_USERNAME>/ecommerce:<YOUR_REG_NO>
+        # Replace 'umairdevops' with your actual Docker Hub username before pushing
+        image: umairameerhussain004/ecommerce:fa23-bcs-209
         ports:
         - containerPort: 5000
         env:
