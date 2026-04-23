@@ -59,5 +59,8 @@ def get_products():
 if __name__ == '__main__':
     if not os.path.exists(DATABASE):
         init_db()
-    # Explicitly listen on 0.0.0.0 so Docker can map the port
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    print("==================================================")
+    print("🌍 Public URL: http://ecommerce-fa23-77982.azurewebsites.net")
+    print("==================================================")
+    # Explicitly listen on localhost (Note: use 0.0.0.0 for Docker)
+    app.run(host='localhost', port=5000, debug=True)
