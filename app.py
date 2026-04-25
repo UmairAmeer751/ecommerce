@@ -62,5 +62,5 @@ if __name__ == '__main__':
     print("==================================================")
     print("🌍 Public URL: http://ecommerce-fa23-77982.azurewebsites.net")
     print("==================================================")
-    # Explicitly listen on localhost (Note: use 0.0.0.0 for Docker)
-    app.run(host='localhost', port=5000, debug=True)
+    # Explicitly listen on all interfaces for Docker
+    app.run(host='0.0.0.0', port=5000, debug=True)
