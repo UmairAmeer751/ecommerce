@@ -1,43 +1,131 @@
-name: Build and Publish Docker Image
+name: "NexShop CI/CD Pipeline"
 
+# ── Triggers ─────────────────────────────────────────────────
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
+# ── Global env ───────────────────────────────────────────────
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  DOCKERHUB_USER: umairameerhussain004
 
+# ═════════════════════════════════════════════════════════════
 jobs:
-  build-and-push-image:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
+# ── Stage 1: BUILD ───────────────────────────────────────────
+  build:
+    name: "Stage 1 — Build"
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Log in to the Container registry
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install backend dependencies
+        run: |
+          pip install -r backend/requirements.txt
+
+      - name: Verify frontend assets exist
+        run: |
+          test -f frontend/index.html
+          test -f frontend/nginx.conf
+          test -f frontend/Dockerfile
+          echo "✅ Frontend assets verified"
+
+      - name: Verify backend assets exist
+        run: |
+          test -f backend/app.py
+          test -f backend/Dockerfile
+          echo "✅ Backend assets verified"
+
+# ── Stage 2: TEST ────────────────────────────────────────────
+  test:
+    name: "Stage 2 — Automated Tests"
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies
+        run: |
+          pip install -r tests/requirements-test.txt
+
+      - name: Run unit tests (pytest)
+        run: |
+          pytest tests/test_api.py -v --tb=short
+
+# ── Stage 3: DOCKER BUILD & PUSH ─────────────────────────────
+  docker:
+    name: "Stage 3 — Docker Build & Push"
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=raw,value=latest
-
-      - name: Build and push Docker image
+      - name: Build & push frontend image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./frontend
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.DOCKERHUB_USER }}/ecommerce-frontend:latest
+
+      - name: Build & push backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ env.DOCKERHUB_USER }}/ecommerce-backend:latest
+
+      - name: Build & push database image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./database
+          push: true
+          tags: ${{ env.DOCKERHUB_USER }}/ecommerce-db:latest
+
+# ── Stage 4: DEPLOY ──────────────────────────────────────────
+  deploy:
+    name: "Stage 4 — Deploy to Kubernetes"
+    runs-on: ubuntu-latest
+    needs: docker
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Deploy to Kubernetes cluster
+        env:
+          KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
+        run: |
+          if [ -n "$KUBECONFIG_DATA" ]; then
+            echo "$KUBECONFIG_DATA" | base64 -d > $HOME/.kube/config
+            kubectl apply -f k8s/
+            kubectl rollout status deployment/frontend-deployment --timeout=120s
+            kubectl rollout status deployment/backend-deployment  --timeout=120s
+            echo "✅ Deployment complete"
+          else
+            echo "⚠️  KUBECONFIG_DATA secret not set — skipping live deploy"
+          fi

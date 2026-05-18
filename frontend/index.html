@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NexShop — Premium tech gadgets and accessories. Buy headphones, cameras, keyboards and more.">
     <title>NexShop | Premium Tech</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <header class="navbar">
@@ -35,7 +35,6 @@
     <main class="container" id="products">
         <h2 class="section-title">Trending Now</h2>
         <div class="product-grid" id="product-grid">
-            <!-- Products will be dynamically injected here -->
             <div class="loader">Loading products...</div>
         </div>
     </main>
@@ -70,9 +69,7 @@
             <div class="cart-total">
                 <h3>Total: $<span id="cart-total-price">0.00</span></h3>
             </div>
-            
             <button id="proceed-checkout-btn" class="btn-primary" style="width: 100%; margin-top: 1.5rem; display: none;">Proceed to Checkout</button>
-            
             <div id="checkout-section" style="display: none; margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
                 <h3>Checkout Details</h3>
                 <form id="checkout-form" class="checkout-form">
@@ -80,14 +77,12 @@
                     <input type="email" id="email" placeholder="Email Address" required>
                     <input type="tel" id="contact-number" placeholder="Contact Number" required>
                     <textarea id="address" placeholder="Delivery Address" rows="3" required></textarea>
-                    
                     <select id="payment-method" required>
                         <option value="" disabled selected>Select Payment Method</option>
                         <option value="jazzcash">JazzCash</option>
                         <option value="easypaisa">EasyPaisa</option>
                         <option value="cod">Cash on Delivery</option>
                     </select>
-                    
                     <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">Confirm Order</button>
                 </form>
             </div>
@@ -98,6 +93,6 @@
         <p>&copy; 2026 NexShop. Designed for DevOps Lab Exam. All rights reserved.</p>
     </footer>
 
-    <script src="/static/js/main.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html>
