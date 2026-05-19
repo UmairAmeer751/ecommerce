@@ -2,9 +2,11 @@ import sqlite3
 from flask import Flask, jsonify, render_template, request, g
 import os
 
+# Initialize Flask application
 app = Flask(__name__)
 DATABASE = 'ecommerce.db'
 
+# Helper function to get or create a database connection
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
@@ -12,12 +14,14 @@ def get_db():
         db.row_factory = sqlite3.Row
     return db
 
+# Close the database connection when the application context ends
 @app.teardown_appcontext
 def close_connection(exception):
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
 
+# Initialize the database with tables and sample data
 def init_db():
     with app.app_context():
         db = get_db()
@@ -44,10 +48,12 @@ def init_db():
             cursor.executemany('INSERT INTO products (name, description, price, image_url) VALUES (?, ?, ?, ?)', products)
             db.commit()
 
+# Route to serve the main frontend application
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# API endpoint to retrieve all products from the database
 @app.route('/api/products')
 def get_products():
     db = get_db()
@@ -57,10 +63,11 @@ def get_products():
     return jsonify(products)
 
 if __name__ == '__main__':
+    # Initialize the database if it doesn't exist yet
     if not os.path.exists(DATABASE):
         init_db()
     print("==================================================")
-    print("🌍 Public URL: http://ecommerce-fa23-77982.azurewebsites.net")
+    print("🌍 Public URL: http://nexshop-ecommerce-app-109.azurewebsites.net")
     print("==================================================")
-    # Explicitly listen on all interfaces for Docker
+    # Start the application and explicitly listen on all interfaces for Docker compatibility
     app.run(host='0.0.0.0', port=5000, debug=True)

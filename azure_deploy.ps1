@@ -5,6 +5,6 @@ if ($LASTEXITCODE -ne 0) {
     az login
 }
 Write-Host "Deploying to Azure App Service..."
-az webapp up --name nexshop-ecommerce-app-$((Get-Random -Maximum 9999)) --resource-group nexshop-rg --runtime "PYTHON|3.9" --sku F1 --location eastus
+az webapp up --name nexshop-ecommerce-app-$((Get-Random -Maximum 9999)) --resource-group nexshop-rg-sea --runtime "PYTHON:3.10" --sku F1 --location southeastasia
 Write-Host "Deployment completed!"
 
